@@ -17,7 +17,8 @@ df_data = df_data.T
 
 st.write("# VAMO LA GURIZADA, GANHADORES DO INOVA SENAI!")
 
-df_data
+# Lembrete: Ajustar o width para ter o mesmo tamanho do título, caso ele seja grande.
+st.dataframe(df_data, width=800, use_container_width=True, column_config={})
 
 time.sleep(TEMPO)
 
