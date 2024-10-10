@@ -4,6 +4,7 @@ import time
 import mysql.connector
 from components.tabela import mostrar_tabela
 from components.historico import mostrar_historico
+from components.historico import trocar_meses_para_portugues
 from components.estatisticas import mostrar_estatisticas
 
 #Configuração da página

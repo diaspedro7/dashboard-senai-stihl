@@ -1,15 +1,29 @@
 import streamlit as st
 import pandas as pd
 
-#TODO: Limitar o número de linhas exibidas. Para 5 talvez?
+# TODO: Limitar o número de linhas exibidas. Para 5 talvez?
+
+def trocar_meses_para_portugues(data_str):
+    meses_en_pt = {
+        'Jan': 'Jan',
+        'Feb': 'Fev',
+        'Mar': 'Mar',
+        'Apr': 'Abr',
+        'May': 'Mai',
+        'Jun': 'Jun',
+        'Jul': 'Jul',
+        'Aug': 'Ago',
+        'Sep': 'Set',
+        'Oct': 'Out',
+        'Nov': 'Nov',
+        'Dec': 'Dez'    }
+    
+    # Substituir os meses no formato 'Mês' pelo mês correspondente em português
+    for mes_en, mes_pt in meses_en_pt.items():
+        data_str = data_str.replace(mes_en, mes_pt)
+    return data_str
 
 def mostrar_historico(mydb):
-    import locale
-
-    # Configuração para PT-BR
-    locale.setlocale(locale.LC_TIME, 'pt_BR.utf8')  
-
-
     # Cria uma consulta SQL
     query2 = "SELECT * FROM tb_consumo_itens"
 
@@ -25,6 +39,9 @@ def mostrar_historico(mydb):
 
     # Formatar a coluna 'data_cons' para o formato desejado
     df_data2['data_cons'] = pd.to_datetime(df_data2['data_cons']).dt.strftime('%d/%b/%Y - %H:%M')
+
+    # Trocar os nomes dos meses de inglês para português
+    df_data2['data_cons'] = df_data2['data_cons'].apply(trocar_meses_para_portugues)
 
     # Renomear as colunas
     df_data2 = df_data2.rename(columns={
