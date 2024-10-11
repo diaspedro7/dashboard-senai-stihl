@@ -42,16 +42,21 @@ def mostrar_tabela(mydb):
 
     # Função para destacar as linhas com a cor vermelha onde a coluna 'Necessário reposição?' é 'Sim'
     def highlight_reposicao(row):
-        return ['background-color: rgba(255, 111, 97, 0.1)' if row['Necessário reposição?'] == "Sim ❌" else '' for _ in row]
+        return ['background-color: rgba(255, 111, 97, 0.2)' if row['Necessário reposição?'] == "Sim ❌" else '' for _ in row]
 
     # Aplica a funcao de destaque das linhas com a cor vermelha
     styled_df = df_data.style.apply(highlight_reposicao, axis=1)
 
     # Titulo
-    st.write("# QUANTIDADE ATUAL DE PRODUTOS")
+    st.markdown(
+    """
+    <h5 style="text-align: center;">QUANTIDADE ATUAL DE PRODUTOS</h5>
+    """, unsafe_allow_html=True
+)
     # Lembrete: Ajustar o width para ter o mesmo tamanho do título, caso ele seja grande.
     #Tabela
-    st.dataframe(styled_df,   width=800, use_container_width=True,
+    st.dataframe(styled_df,   width=800,use_container_width=True,
                 column_config={
-                    "Quantidade": st.column_config.ProgressColumn("Quantidade", format="%d", min_value=0, max_value=5, width=200),
+                    "Quantidade": st.column_config.ProgressColumn("Quantidade", format="%d", min_value=0, max_value=5, #width=200
+                                                                  ),
                 }, hide_index=True)

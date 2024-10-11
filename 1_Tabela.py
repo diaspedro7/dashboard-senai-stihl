@@ -5,7 +5,8 @@ import mysql.connector
 from components.tabela import mostrar_tabela
 from components.historico import mostrar_historico
 from components.historico import trocar_meses_para_portugues
-from components.estatisticas import mostrar_estatisticas
+from components.estatisticas import mostrar_grafico_barras
+from components.estatisticas import mostrar_grafico_pizza
 
 #Configuração da página
 st.set_page_config(layout="wide", page_icon="🖥️", page_title="Monitoramento de Higiene Stihl",initial_sidebar_state="collapsed")
@@ -33,18 +34,24 @@ print("Database: " + str(mydb))
 # )
 # st.divider()
 
-# Tabela de produtos
 mostrar_tabela(mydb)
 
-st.divider()
-
 # Historico de Consumo de Itens
-mostrar_historico(mydb)
+#mostrar_historico(mydb)
 
 st.divider()
 
-# Estatisticas
-mostrar_estatisticas(mydb)
+col1, col2 = st.columns([1, 1])
+
+# Chamar a função de mostrar a tabela na primeira coluna
+with col1:
+    mostrar_grafico_barras(mydb) # Função para exibir o gráfico em barras
+
+
+# Chamar a função de mostrar o gráfico de pizza na segunda coluna
+with col2:
+    mostrar_grafico_pizza(mydb)  # Função para exibir o gráfico de pizza
+
 
 
 

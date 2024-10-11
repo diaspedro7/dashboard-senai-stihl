@@ -73,13 +73,14 @@ def mostrar_historico(mydb):
         if row['Nome do produto'] in df_estoque['nome_prod'].values:
             estoque = df_estoque.loc[df_estoque['nome_prod'] == row['Nome do produto'], 'qtde_atual_prod'].values[0]
             if estoque == 0:
-                return ['background-color: rgba(255, 111, 97, 0.1)'] * len(row)
+                return ['background-color: rgba(255, 111, 97, 0.2)'] * len(row)
         return [''] * len(row)
 
     # Aplica a função de destaque
     styled_df2 = df_data2.style.apply(highlight_row, axis=1)
 
-    st.write("# HISTÓRICO DE CONSUMO DE ITENS")
+    #st.write("##### HISTÓRICO DE CONSUMO DE ITENS")
+    st.title("HISTÓRICO DE CONSUMO DE ITENS")
 
     # Exibir a tabela estilizada
     st.dataframe(styled_df2, use_container_width=True, hide_index=True,
