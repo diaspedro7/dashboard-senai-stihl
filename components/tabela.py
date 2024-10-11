@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 
+
 def mostrar_tabela(mydb):
         
     # Cria uma consulta SQL
@@ -33,16 +34,18 @@ def mostrar_tabela(mydb):
     })
 
     # Cria uma função que adiciona o "#" ao identificador para ficar mais bonito
-    def addHash(identificador):
-            return f"#{identificador}"
+    
 
     #Aplica a função addHash na coluna 'Identificador'
     df_data["Identificador"] = df_data["Identificador"].apply(addHash)
 
+    df_data = df_data.sort_values(by="Necessário reposição?", ascending=False)
+
+
 
     # Função para destacar as linhas com a cor vermelha onde a coluna 'Necessário reposição?' é 'Sim'
     def highlight_reposicao(row):
-        return ['background-color: rgba(255, 111, 97, 0.2)' if row['Necessário reposição?'] == "Sim ❌" else '' for _ in row]
+        return ['background-color: rgba(255, 111, 97, 0.1)' if row['Necessário reposição?'] == "Sim ❌" else '' for _ in row]
 
     # Aplica a funcao de destaque das linhas com a cor vermelha
     styled_df = df_data.style.apply(highlight_reposicao, axis=1)
@@ -50,7 +53,7 @@ def mostrar_tabela(mydb):
     # Titulo
     st.markdown(
     """
-    <h5 style="text-align: center;">QUANTIDADE ATUAL DE PRODUTOS</h5>
+    <h3 style="text-align: center;">QUANTIDADE ATUAL DE PRODUTOS</h3>
     """, unsafe_allow_html=True
 )
     # Lembrete: Ajustar o width para ter o mesmo tamanho do título, caso ele seja grande.
@@ -60,3 +63,6 @@ def mostrar_tabela(mydb):
                     "Quantidade": st.column_config.ProgressColumn("Quantidade", format="%d", min_value=0, max_value=5, #width=200
                                                                   ),
                 }, hide_index=True)
+
+def addHash(identificador):
+            return f"#{identificador}"

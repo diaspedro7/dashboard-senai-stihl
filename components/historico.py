@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+from components.tabela import addHash
 
 # TODO: Limitar o número de linhas exibidas. Para 5 talvez?
 
@@ -47,9 +48,9 @@ def mostrar_historico(mydb):
     df_data2 = df_data2.rename(columns={
         "id_cons": "Número",
         "data_cons": "Data de consumo",
-        "matricula_func": "Matrícula do funcionário",
+        "matricula_func": "Matrícula",
         "nome_func": "Nome do funcionário",
-        "setor_func": "Setor do funcionário",
+        "setor_func": "Setor",
         "nome_prod": "Nome do produto",
         "qtde_consumo_prod": "Quantidade de consumo",
         "un_med_prod": "Unidade de medida",
@@ -80,10 +81,48 @@ def mostrar_historico(mydb):
     styled_df2 = df_data2.style.apply(highlight_row, axis=1)
 
     #st.write("##### HISTÓRICO DE CONSUMO DE ITENS")
-    st.title("HISTÓRICO DE CONSUMO DE ITENS")
+    #st.title("HISTÓRICO DE CONSUMO DE ITENS")
 
-    # Exibir a tabela estilizada
-    st.dataframe(styled_df2, use_container_width=True, hide_index=True,
+    col1, col2 = st.columns([3, 1.1])  # Adiciona um espaço fantasma entre as colunas
+
+    with col1:
+        st.title("HISTÓRICO DE CONSUMO DE ITENS")
+
+        # Exibir a tabela estilizada
+        st.dataframe(styled_df2, use_container_width=True, hide_index=True,
                 column_config={
                     "Quantidade de consumo": st.column_config.ProgressColumn("Quantidade de consumo", format="%d", min_value=0, max_value=5),
                 })
+        
+    
+    
+    with col2:
+    # Agrupar por funcionário e setor, somando a quantidade de consumo
+        df_top_funcionarios = df_data2.groupby(['Nome do funcionário', 'Setor'])['Quantidade de consumo'].sum().reset_index()
+
+        # Ordenar os funcionários pelos que mais consumiram
+        df_top_funcionarios = df_top_funcionarios.sort_values(by='Quantidade de consumo', ascending=False)
+
+        # Adicionar uma coluna para representar a posição no ranking
+        df_top_funcionarios['Posição'] = df_top_funcionarios['Quantidade de consumo'].rank(method='min', ascending=False).astype(int)
+
+        # Pegar os 5 principais funcionários que mais consumiram
+        df_top_5_funcionarios = df_top_funcionarios.head(5)
+
+        #Aplica a função addHash na coluna 'Identificador'
+        df_top_5_funcionarios["Posição"] = df_top_5_funcionarios["Posição"].apply(addHash)
+
+        # Reordenar as colunas para que a posição apareça primeiro
+        df_top_5_funcionarios = df_top_5_funcionarios[['Posição', 'Nome do funcionário', 'Setor', 'Quantidade de consumo']]
+
+        # Exibir a tabela com o ranking dos funcionários
+        #st.write("### Funcionários que mais consumiram")
+        st.markdown(
+    """
+    <h4 style="text-align: center;">FUNCIONÁRIOS QUE MAIS CONSUMIRAM</h4>
+    """, unsafe_allow_html=True
+)
+        st.dataframe(df_top_5_funcionarios, hide_index=True, column_config={
+            "Posição": st.column_config.TextColumn("Posição", width=55),
+            "Quantidade de consumo": st.column_config.TextColumn("Quantidade",),
+        })
